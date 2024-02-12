@@ -134,4 +134,8 @@ MACRO_CONFIG_INT(DbgStressNetwork, dbg_stress_network, 0, 0, 0, CFGFLAG_CLIENT|C
 MACRO_CONFIG_STR(DbgStressServer, dbg_stress_server, 32, "localhost", CFGFLAG_CLIENT, "Server to stress")
 #endif
 
+
+// Control Point
+MACRO_CONFIG_INT(CPControlMode, cp_control_mode, 0, 0, 1, CFGFLAG_SERVER, "0:Control All Points, 1:Control Point to earn score");
+MACRO_CONFIG_INT(CPMaxProgress, cp_max_progress, 500, 2, 50000, CFGFLAG_SERVER, "0:Control All Points, 1:Control Point to earn score");
 #endif

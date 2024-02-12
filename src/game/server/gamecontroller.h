@@ -10,6 +10,8 @@
 
 #include <generated/protocol.h>
 
+#include <vector>
+
 /*
 	Class: Game Controller
 		Controls the main game logic. Keeping track of team and player score,
@@ -237,6 +239,17 @@ public:
 	int TeamScore(int Team) const { return m_aTeamscore[Team]; }
 
 	virtual void RegisterChatCommands(CCommandManager *pManager);
+
+public:
+	struct CAreaFlagInfo
+	{
+		vec2 m_LowerPos;
+		vec2 m_UpperPos;
+		int m_PointEarnPerSec;
+		int m_DefaultTeam;
+	};
+
+	std::vector<CAreaFlagInfo> m_AreaFlagInfo;
 };
 
 #endif

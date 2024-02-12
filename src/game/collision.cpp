@@ -30,8 +30,9 @@ void CCollision::Init(class CLayers *pLayers)
 	for(int i = 0; i < m_Width*m_Height; i++)
 	{
 		int Index = m_pTiles[i].m_Index;
+		m_Reversed = Index;
 
-		if(Index > 128)
+		if (Index > 128)
 			continue;
 
 		switch(Index)
@@ -45,6 +46,10 @@ void CCollision::Init(class CLayers *pLayers)
 		case TILE_NOHOOK:
 			m_pTiles[i].m_Index = COLFLAG_SOLID|COLFLAG_NOHOOK;
 			break;
+		case TILE_HOLD:
+			m_pTiles[i].m_Index = COLFLAG_HOLD;
+			break;
+
 		default:
 			m_pTiles[i].m_Index = 0;
 		}
@@ -65,7 +70,7 @@ bool CCollision::IsTile(int x, int y, int Flag) const
 }
 
 // TODO: rewrite this smarter!
-int CCollision::IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision) const
+int CCollision::IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision, int Flag) const
 {
 	const int End = distance(Pos0, Pos1)+1;
 	const float InverseEnd = 1.0f/End;
@@ -74,7 +79,7 @@ int CCollision::IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *p
 	for(int i = 0; i <= End; i++)
 	{
 		vec2 Pos = mix(Pos0, Pos1, i*InverseEnd);
-		if(CheckPoint(Pos.x, Pos.y))
+		if(CheckPoint(Pos.x, Pos.y, Flag))
 		{
 			if(pOutCollision)
 				*pOutCollision = Pos;

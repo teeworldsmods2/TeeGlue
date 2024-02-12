@@ -21,6 +21,7 @@ public:
 		COLFLAG_SOLID=1,
 		COLFLAG_DEATH=2,
 		COLFLAG_NOHOOK=4,
+		COLFLAG_HOLD=8,
 	};
 
 	CCollision();
@@ -30,10 +31,12 @@ public:
 	int GetCollisionAt(float x, float y) const { return GetTile(round_to_int(x), round_to_int(y)); }
 	int GetWidth() const { return m_Width; }
 	int GetHeight() const { return m_Height; }
-	int IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision) const;
+	int IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision, int Flag = 1) const;
 	void MovePoint(vec2 *pInoutPos, vec2 *pInoutVel, float Elasticity, int *pBounces) const;
 	void MoveBox(vec2 *pInoutPos, vec2 *pInoutVel, vec2 Size, float Elasticity, bool *pDeath=0) const;
 	bool TestBox(vec2 Pos, vec2 Size, int Flag=COLFLAG_SOLID) const;
+
+	int m_Reversed;
 };
 
 #endif

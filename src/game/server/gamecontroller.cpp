@@ -711,8 +711,7 @@ void IGameController::Snap(int SnappingClient)
 	if(m_SuddenDeath)
 		GameData.m_GameStateFlags |= GAMESTATEFLAG_SUDDENDEATH;
 
-	if(!NetConverter()->SnapNewItemConvert(&GameData, this, NETOBJTYPE_GAMEDATA, 0, sizeof(CNetObj_GameData), SnappingClient))
-		return;
+	NetConverter()->SnapNewItemConvert(&GameData, this, NETOBJTYPE_GAMEDATA, 0, sizeof(CNetObj_GameData), SnappingClient);
 
 	if(IsTeamplay())
 	{
@@ -721,8 +720,7 @@ void IGameController::Snap(int SnappingClient)
 		GameDataTeam.m_TeamscoreRed = m_aTeamscore[TEAM_RED];
 		GameDataTeam.m_TeamscoreBlue = m_aTeamscore[TEAM_BLUE];
 
-		if(!NetConverter()->SnapNewItemConvert(&GameDataTeam, this, NETOBJTYPE_GAMEDATATEAM, 0, sizeof(CNetObj_GameDataTeam), SnappingClient))
-			return;
+		NetConverter()->SnapNewItemConvert(&GameDataTeam, this, NETOBJTYPE_GAMEDATATEAM, 0, sizeof(CNetObj_GameDataTeam), SnappingClient);
 	}
 
 	// demo recording

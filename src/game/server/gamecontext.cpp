@@ -23,6 +23,7 @@
 #include "gamemodes/lts.h"
 #include "gamemodes/mod.h"
 #include "gamemodes/tdm.h"
+#include "gamemodes/cp.h"
 #include "gamecontext.h"
 #include "localization.h"
 #include "player.h"
@@ -1750,6 +1751,8 @@ void CGameContext::OnInit()
 		m_pController = new CGameControllerLTS(this);
 	else if(str_comp_nocase(Config()->m_SvGametype, "tdm") == 0)
 		m_pController = new CGameControllerTDM(this);
+	else if (str_comp_nocase(Config()->m_SvGametype, "cp") == 0)
+		m_pController = new CGameControllerCP(this);
 	else
 		m_pController = new CGameControllerDM(this);
 
