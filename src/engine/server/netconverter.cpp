@@ -553,8 +553,8 @@ bool CNetConverter::DeepSnapConvert6(void *pItem, void *pSnapClass, int Type, in
 
             if(!pObj6)
                 return false;
-            pObj6->m_FlagCarrierRed = pObj6->m_FlagCarrierRed;
-            pObj6->m_FlagCarrierBlue = pObj6->m_FlagCarrierBlue;
+            pObj6->m_FlagCarrierRed = -1;
+            pObj6->m_FlagCarrierBlue = -1;
             pObj6->m_TeamscoreRed = pObj7->m_TeamscoreRed;
             pObj6->m_TeamscoreBlue = pObj7->m_TeamscoreBlue;
 
