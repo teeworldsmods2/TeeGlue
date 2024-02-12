@@ -12,7 +12,7 @@ public:
     static int const ms_PhysSize = 14;
 
     /* Constructor */
-    CAreaFlag(CGameWorld *pGameWorld, vec2 Pos0, vec2 Pos1, int DefaultTeam, int EarnPoint);
+    CAreaFlag(CGameWorld *pGameWorld, vec2 Pos0, vec2 Pos1, int MaxProgress, int EarnPoint);
     ~CAreaFlag();
 
     /* CEntity functions */
@@ -29,6 +29,7 @@ private:
     int m_PointEarnPerSec;
     vec2 m_LowerPos;
     vec2 m_UpperPos;
+    int m_MaxProgress;
 
     int m_LaserSnap;
 

@@ -246,7 +246,7 @@ public:
 		vec2 m_LowerPos;
 		vec2 m_UpperPos;
 		int m_PointEarnPerSec;
-		int m_DefaultTeam;
+		int m_MaxProgress;
 	};
 
 	std::vector<CAreaFlagInfo> m_AreaFlagInfo;

@@ -20,9 +20,12 @@ CGameControllerCP::CGameControllerCP(class CGameContext *pGameServer)
 
     LoadFlags();
     for (int i = 0; i < (int)m_AreaFlagInfo.size(); i++)
-        new CAreaFlag(&GameServer()->m_World, m_AreaFlagInfo[i].m_LowerPos, m_AreaFlagInfo[i].m_UpperPos, m_AreaFlagInfo[i].m_DefaultTeam,
+        new CAreaFlag(&GameServer()->m_World, m_AreaFlagInfo[i].m_LowerPos, m_AreaFlagInfo[i].m_UpperPos, m_AreaFlagInfo[i].m_MaxProgress,
                       m_AreaFlagInfo[i].m_PointEarnPerSec);
-    Config()->m_SvScorelimit = m_AreaFlagInfo.size() * 100;
+    if (Config()->m_CPControlMode == MODE_SCORE2WIN)
+        Config()->m_SvScorelimit = m_AreaFlagInfo.size() * 240;
+    else
+        Config()->m_SvScorelimit = m_AreaFlagInfo.size() * 100;
 }
 
 void CGameControllerCP::Tick()
@@ -71,14 +74,15 @@ void CGameControllerCP::LoadFlags()
             if (!str_comp_num(pLine, "flag", 4))
             {
                 int Point = 0;
-                int DefaultTeam = TEAM_SPECTATORS;
+                int MaxProgress = Config()->m_CPMaxProgress;
                 vec2 Pos0, Pos1;
-                if (sscanf(pLine, "flag t%d p%d lx%f ly%f ux%f uy%f", &DefaultTeam, &Point, &Pos0.x, &Pos0.y, &Pos1.x, &Pos1.y))
+                if (sscanf(pLine, "flag t%d p%d lx%f ly%f ux%f uy%f", &MaxProgress, &Point, &Pos0.x, &Pos0.y, &Pos1.x, &Pos1.y))
                 {
                     CAreaFlagInfo Temp;
                     Temp.m_PointEarnPerSec = Point;
                     Temp.m_LowerPos = vec2(Pos0.x * 32 + 32, Pos0.y * 32 + 32);
                     Temp.m_UpperPos = vec2(Pos1.x * 32 + 32, Pos1.y * 32 + 32);
+                    Temp.m_MaxProgress = MaxProgress;
                     m_AreaFlagInfo.push_back(Temp);
                 }
             }
