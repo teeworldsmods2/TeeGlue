@@ -49,10 +49,12 @@ void CGameControllerCP::Tick()
         else if (Config()->m_CPControlMode == MODE_SCORE2WIN)
         {
             if (Server()->Tick() % 50 == 0)
+            {
                 if (Flag->GetTeam() == TEAM_RED)
                     m_aTeamscore[TEAM_RED] += Flag->GetPointEarnPerSec();
-            if (Flag->GetTeam() == TEAM_BLUE)
-                m_aTeamscore[TEAM_BLUE] += Flag->GetPointEarnPerSec();
+                if (Flag->GetTeam() == TEAM_BLUE)
+                    m_aTeamscore[TEAM_BLUE] += Flag->GetPointEarnPerSec();
+            }
         }
     }
 }
@@ -99,5 +101,4 @@ void CGameControllerCP::LoadFlags()
 
 void CGameControllerCP::OnRoundStart(int GameState)
 {
-    
 }
