@@ -22,8 +22,14 @@ CGameControllerCP::CGameControllerCP(class CGameContext *pGameServer)
     for (int i = 0; i < (int)m_AreaFlagInfo.size(); i++)
         new CAreaFlag(&GameServer()->m_World, m_AreaFlagInfo[i].m_LowerPos, m_AreaFlagInfo[i].m_UpperPos, m_AreaFlagInfo[i].m_MaxProgress,
                       m_AreaFlagInfo[i].m_PointEarnPerSec);
+
     if (Config()->m_CPControlMode == MODE_SCORE2WIN)
-        Config()->m_SvScorelimit = m_AreaFlagInfo.size() * 240;
+    {
+        float Score = 0;
+        for (int i = 0; i < m_AreaFlagInfo.size(); i++)
+            Score += m_AreaFlagInfo[i].m_MaxProgress;
+        Config()->m_SvScorelimit = round_to_int(Score * 0.75);
+    }
     else
         Config()->m_SvScorelimit = m_AreaFlagInfo.size() * 100;
 }
@@ -39,10 +45,10 @@ void CGameControllerCP::Tick()
     {
         if (Config()->m_CPControlMode == MODE_CONTROL_ALL)
         {
-            if (Flag->GetTeam() == TEAM_RED)
-                Score[TEAM_RED] += 100;
-            if (Flag->GetTeam() == TEAM_BLUE)
-                Score[TEAM_BLUE] += 100;
+            if (Flag->GetProgress() < 0)
+                Score[TEAM_RED] += abs(Flag->GetProgress());
+            if (Flag->GetProgress() > 0)
+                Score[TEAM_BLUE] += abs(Flag->GetProgress());
             m_aTeamscore[TEAM_RED] = Score[TEAM_RED];
             m_aTeamscore[TEAM_BLUE] = Score[TEAM_BLUE];
         }
