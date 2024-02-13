@@ -23,7 +23,7 @@ CGameControllerCP::CGameControllerCP(class CGameContext *pGameServer)
         new CAreaFlag(&GameServer()->m_World, m_AreaFlagInfo[i].m_LowerPos, m_AreaFlagInfo[i].m_UpperPos, m_AreaFlagInfo[i].m_MaxProgress,
                       m_AreaFlagInfo[i].m_PointEarnPerSec);
     if (Config()->m_CPControlMode == MODE_SCORE2WIN)
-        Config()->m_SvScorelimit = m_AreaFlagInfo.size();
+        Config()->m_SvScorelimit = m_AreaFlagInfo.size() * 240;
     else
     {
         float Score = 0;
