@@ -31,7 +31,7 @@ private:
     vec2 m_UpperPos;
     int m_MaxProgress;
 
-    int m_LaserSnap;
+    int m_LaserSnap[2];
 
     float m_StepX;
     float m_StepY;

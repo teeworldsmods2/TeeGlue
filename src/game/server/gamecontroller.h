@@ -173,6 +173,8 @@ public:
 	virtual void OnPlayerInfoChange(class CPlayer *pPlayer);
 	virtual void OnPlayerReadyChange(class CPlayer *pPlayer);
 	virtual void OnPlayerCommand(class CPlayer *pPlayer, const char *pCommandName, const char *pCommandArgs) {};
+	
+	virtual void OnRoundStart(int GameState) {};
 
 	void OnReset();
 

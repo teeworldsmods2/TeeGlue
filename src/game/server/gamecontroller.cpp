@@ -658,6 +658,8 @@ void IGameController::StartRound()
 		SetGameState(IGS_START_COUNTDOWN);
 	else
 		SetGameState(IGS_WARMUP_GAME, TIMER_INFINITE);
+
+	OnRoundStart(m_GameState);
 }
 
 void IGameController::SwapTeamscore()

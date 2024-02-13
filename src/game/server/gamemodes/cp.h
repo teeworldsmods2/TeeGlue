@@ -15,6 +15,7 @@ class CGameControllerCP : public IGameController
 public:
     CGameControllerCP(class CGameContext *pGameServer);
     virtual void Tick();
+    virtual void OnRoundStart(int GameState);
 
 public:
     void LoadFlags();

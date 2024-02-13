@@ -15,7 +15,8 @@ CAreaFlag::CAreaFlag(CGameWorld *pWorld, vec2 Pos0, vec2 Pos1, int MaxProgress, 
     m_LowerPos = Pos0;
     m_UpperPos = Pos1;
     m_PointEarnPerSec = EarnPoint;
-    m_LaserSnap = Server()->SnapNewID();
+    m_LaserSnap[0] = Server()->SnapNewID();
+    m_LaserSnap[1] = Server()->SnapNewID();
     m_MaxProgress = MaxProgress;
     Reset();
     GameWorld()->InsertEntity(this);
@@ -23,7 +24,8 @@ CAreaFlag::CAreaFlag(CGameWorld *pWorld, vec2 Pos0, vec2 Pos1, int MaxProgress, 
 
 CAreaFlag::~CAreaFlag()
 {
-    Server()->SnapFreeID(m_LaserSnap);
+    Server()->SnapFreeID(m_LaserSnap[0]);
+    Server()->SnapFreeID(m_LaserSnap[1]);
 }
 
 void CAreaFlag::Reset()
@@ -51,13 +53,21 @@ void CAreaFlag::Snap(int SnappingClient)
     Flag.m_Team = (m_Progress < 0) ? TEAM_RED : TEAM_BLUE;
     NetConverter()->SnapNewItemConvert(&Flag, this, NETOBJTYPE_FLAG, GetID(), sizeof(CNetObj_Flag), SnappingClient);
 
-    CNetObj_Laser Laser;
-    Laser.m_FromX = m_LowerPos.x;
-    Laser.m_FromY = m_LowerPos.y;
-    Laser.m_X = m_UpperPos.x;
-    Laser.m_Y = m_UpperPos.y;
-    Laser.m_StartTick = Server()->Tick();
-    NetConverter()->SnapNewItemConvert(&Laser, this, NETOBJTYPE_LASER, m_LaserSnap, sizeof(CNetObj_Laser), SnappingClient);
+    CNetObj_Laser Laser0;
+    Laser0.m_FromX = m_LowerPos.x;
+    Laser0.m_FromY = m_LowerPos.y;
+    Laser0.m_X = m_UpperPos.x;
+    Laser0.m_Y = m_UpperPos.y;
+    Laser0.m_StartTick = Server()->Tick();
+    NetConverter()->SnapNewItemConvert(&Laser0, this, NETOBJTYPE_LASER, m_LaserSnap[0], sizeof(CNetObj_Laser), SnappingClient);
+
+    CNetObj_Laser Laser1;
+    Laser1.m_FromX = m_UpperPos.x;
+    Laser1.m_FromY = m_UpperPos.y;
+    Laser1.m_X = m_UpperPos.x;
+    Laser1.m_Y = m_LowerPos.y;
+    Laser1.m_StartTick = Server()->Tick();
+    NetConverter()->SnapNewItemConvert(&Laser1, this, NETOBJTYPE_LASER, m_LaserSnap[1], sizeof(CNetObj_Laser), SnappingClient);
 }
 
 void CAreaFlag::TickDefered()

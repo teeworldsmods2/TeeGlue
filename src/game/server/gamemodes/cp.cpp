@@ -30,6 +30,8 @@ CGameControllerCP::CGameControllerCP(class CGameContext *pGameServer)
 
 void CGameControllerCP::Tick()
 {
+    IGameController::Tick();
+
     int Score[2];
     Score[TEAM_RED] = 0;
     Score[TEAM_BLUE] = 0;
@@ -53,8 +55,6 @@ void CGameControllerCP::Tick()
                 m_aTeamscore[TEAM_BLUE] += Flag->GetPointEarnPerSec();
         }
     }
-
-    IGameController::Tick();
 }
 
 void CGameControllerCP::LoadFlags()
@@ -95,4 +95,9 @@ void CGameControllerCP::LoadFlags()
         }
         io_close(File);
     }
+}
+
+void CGameControllerCP::OnRoundStart(int GameState)
+{
+    
 }
