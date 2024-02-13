@@ -23,6 +23,7 @@ public:
     int GetTeam();
     int GetProgress() { return m_Progress; };
     int GetPointEarnPerSec() { return m_PointEarnPerSec; }
+    int GetMaxProgress() { return m_MaxProgress; }
 
 private:
     int m_Progress;

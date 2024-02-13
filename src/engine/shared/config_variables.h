@@ -137,5 +137,6 @@ MACRO_CONFIG_STR(DbgStressServer, dbg_stress_server, 32, "localhost", CFGFLAG_CL
 
 // Control Point
 MACRO_CONFIG_INT(CPControlMode, cp_control_mode, 0, 0, 1, CFGFLAG_SERVER, "0:Control All Points, 1:Control Point to earn score");
-MACRO_CONFIG_INT(CPMaxProgress, cp_max_progress, 500, 2, 50000, CFGFLAG_SERVER, "0:Control All Points, 1:Control Point to earn score");
+MACRO_CONFIG_INT(CPMaxProgress, cp_max_progress, 500, 2, 50000, CFGFLAG_SERVER, "Set the default max progress if mapper not set");
+MACRO_CONFIG_INT(CPPercentToWinGame, cp_capture_percent, 80, 1, 100, CFGFLAG_SERVER, "");
 #endif

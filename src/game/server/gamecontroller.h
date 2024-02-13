@@ -241,17 +241,6 @@ public:
 	int TeamScore(int Team) const { return m_aTeamscore[Team]; }
 
 	virtual void RegisterChatCommands(CCommandManager *pManager);
-
-public:
-	struct CAreaFlagInfo
-	{
-		vec2 m_LowerPos;
-		vec2 m_UpperPos;
-		int m_PointEarnPerSec;
-		int m_MaxProgress;
-	};
-
-	std::vector<CAreaFlagInfo> m_AreaFlagInfo;
 };
 
 #endif

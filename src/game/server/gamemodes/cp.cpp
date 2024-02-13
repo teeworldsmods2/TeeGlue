@@ -19,17 +19,15 @@ CGameControllerCP::CGameControllerCP(class CGameContext *pGameServer)
     m_GameFlags = GAMEFLAG_TEAMS;
 
     LoadFlags();
+    m_Mode = Config()->m_CPControlMode;
+    m_NumFlag = 0;
     for (int i = 0; i < (int)m_AreaFlagInfo.size(); i++)
+    {
+        if (m_Mode == MODE_SCORE2WIN && m_AreaFlagInfo[i].m_PointEarnPerSec == 0)
+            continue;
         new CAreaFlag(&GameServer()->m_World, m_AreaFlagInfo[i].m_LowerPos, m_AreaFlagInfo[i].m_UpperPos, m_AreaFlagInfo[i].m_MaxProgress,
                       m_AreaFlagInfo[i].m_PointEarnPerSec);
-    if (Config()->m_CPControlMode == MODE_SCORE2WIN)
-        Config()->m_SvScorelimit = m_AreaFlagInfo.size() * 240;
-    else
-    {
-        float Score = 0;
-        for (int i = 0; i < m_AreaFlagInfo.size(); i++)
-            Score += m_AreaFlagInfo[i].m_MaxProgress;
-        Config()->m_SvScorelimit = round_to_int(Score * 0.75);
+        m_NumFlag++;
     }
 }
 
@@ -37,30 +35,41 @@ void CGameControllerCP::Tick()
 {
     IGameController::Tick();
 
-    int Score[2];
-    Score[TEAM_RED] = 0;
-    Score[TEAM_BLUE] = 0;
+    int aScore[2];
+    aScore[TEAM_RED] = 0;
+    aScore[TEAM_BLUE] = 0;
     for (CAreaFlag *Flag = (CAreaFlag *)GameServer()->m_World.FindFirst(CGameWorld::ENTTYPE_AREA_FLAG); Flag; Flag = (CAreaFlag *)Flag->TypeNext())
     {
         if (Config()->m_CPControlMode == MODE_CONTROL_ALL)
         {
             if (Flag->GetProgress() < 0)
-                Score[TEAM_RED] += abs(Flag->GetProgress());
+                aScore[TEAM_RED] += abs(Flag->GetProgress());
             if (Flag->GetProgress() > 0)
-                Score[TEAM_BLUE] += abs(Flag->GetProgress());
-            m_aTeamscore[TEAM_RED] = Score[TEAM_RED];
-            m_aTeamscore[TEAM_BLUE] = Score[TEAM_BLUE];
+                aScore[TEAM_BLUE] += abs(Flag->GetProgress());
+            m_aTeamscore[TEAM_RED] = aScore[TEAM_RED];
+            m_aTeamscore[TEAM_BLUE] = aScore[TEAM_BLUE];
         }
         else if (Config()->m_CPControlMode == MODE_SCORE2WIN)
         {
             if (Server()->Tick() % 50 == 0)
             {
-                if (Flag->GetTeam() == TEAM_RED)
-                    m_aTeamscore[TEAM_RED] += Flag->GetPointEarnPerSec();
-                if (Flag->GetTeam() == TEAM_BLUE)
-                    m_aTeamscore[TEAM_BLUE] += Flag->GetPointEarnPerSec();
+                int Score = ceil((float)abs(Flag->GetProgress())) / ((float)Flag->GetMaxProgress()) / ((float)Flag->GetPointEarnPerSec());
+                if (Flag->GetProgress() < 0)
+                    m_aTeamscore[TEAM_RED] += Score;
+                if (Flag->GetProgress() > 0)
+                    m_aTeamscore[TEAM_BLUE] += Score;
             }
         }
+    }
+
+    if (m_Mode == MODE_SCORE2WIN)
+        Config()->m_SvScorelimit = m_NumFlag * 240;
+    else
+    {
+        float Score = 0;
+        for (int i = 0; i < (int)m_AreaFlagInfo.size(); i++)
+            Score += m_AreaFlagInfo[i].m_MaxProgress;
+        Config()->m_SvScorelimit = round_to_int(((int)m_AreaFlagInfo.size() * 240) * (float)(Config()->m_CPPercentToWinGame / 100.f));
     }
 }
 

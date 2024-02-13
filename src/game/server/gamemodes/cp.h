@@ -18,6 +18,19 @@ public:
     virtual void OnRoundStart(int GameState);
 
 public:
+    struct CAreaFlagInfo
+    {
+        vec2 m_LowerPos;
+        vec2 m_UpperPos;
+        int m_PointEarnPerSec;
+        int m_MaxProgress;
+    };
+
+    std::vector<CAreaFlagInfo> m_AreaFlagInfo;
+
     void LoadFlags();
+
+    int m_NumFlag;
+    int m_Mode;
 };
 #endif
