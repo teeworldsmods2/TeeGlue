@@ -969,40 +969,6 @@ set(EXPECTED_DATA
   mapres/winter_mountains.png
   mapres/winter_mountains2.png
   mapres/winter_mountains3.png
-  maps/ctf1.map
-  maps/ctf2.map
-  maps/ctf3.map
-  maps/ctf4.map
-  maps/ctf5.map
-  maps/ctf6.map
-  maps/ctf7.map
-  maps/ctf8.map
-  maps/dm1.map
-  maps/dm2.map
-  maps/dm3.map
-  maps/dm6.map
-  maps/dm7.map
-  maps/dm8.map
-  maps/dm9.map
-  maps/license.txt
-  maps/lms1.map
-  maps/readme.txt
-  maps6/ctf1.map
-  maps6/ctf2.map
-  maps6/ctf3.map
-  maps6/ctf4.map
-  maps6/ctf5.map
-  maps6/ctf6.map
-  maps6/ctf7.map
-  maps6/dm1.map
-  maps6/dm2.map
-  maps6/dm6.map
-  maps6/dm7.map
-  maps6/dm8.map
-  maps6/dm9.map
-  maps6/license.txt
-  maps6/lms1.map
-  maps6/readme.txt
   particles.png
   race_flag.png
   server_lang/index.json
@@ -1667,6 +1633,10 @@ set_src(ENGINE_SERVER GLOB src/engine/server
 )
 set_src(GAME_SERVER GLOB_RECURSE src/game/server
   alloc.h
+  entities/building.cpp
+  entities/building.h
+  entities/controlled-laser.cpp
+  entities/controlled-laser.h
   entities/character.cpp
   entities/character.h
   entities/flag.cpp
@@ -1695,6 +1665,8 @@ set_src(GAME_SERVER GLOB_RECURSE src/game/server
   gamemodes/lts.h
   gamemodes/mod.cpp
   gamemodes/mod.h
+  gamemodes/oil.cpp
+  gamemodes/oil.h
   gamemodes/tdm.cpp
   gamemodes/tdm.h
   gameworld.cpp

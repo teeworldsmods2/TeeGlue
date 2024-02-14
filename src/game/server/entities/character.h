@@ -95,10 +95,6 @@ private:
 	int m_LastAction;
 	int m_LastNoAmmoSound;
 
-	// these are non-heldback inputs
-	CNetObj_PlayerInput m_LatestPrevInput;
-	CNetObj_PlayerInput m_LatestInput;
-
 	// input
 	CNetObj_PlayerInput m_Input;
 	int m_NumInputs;
@@ -129,6 +125,16 @@ public:
 	CCharacterCore *Core() { return &m_Core; }
 	NinjaStat *NinjaStat() { return &m_Ninja; }
 	WeaponStat *WeaponStat(int Weapon) { return &m_aWeapons[Weapon]; }
+	int GetAttackTick() { return m_AttackTick; }
+
+	// these are non-heldback inputs
+	CNetObj_PlayerInput m_LatestPrevInput;
+	CNetObj_PlayerInput m_LatestInput;
+
+public:
+	void SetTestBuilding();
+
+	void SetBuilding();
 };
 
 #endif
