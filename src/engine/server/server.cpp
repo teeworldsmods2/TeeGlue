@@ -13,6 +13,8 @@
 #include <engine/server.h>
 #include <engine/storage.h>
 
+#include <engine/external/zlib/zlib.h>
+
 #include <engine/shared/compression.h>
 #include <engine/shared/config.h>
 #include <engine/shared/datafile.h>
@@ -987,7 +989,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					// check for last part
 					if(Offset+ChunkSize >= m_aMapInfos[m_aClients[ClientID].MapType()].m_MapSize)
 					{
-						ChunkSize = m_aMapInfos[m_aClients[ClientID].MapType()].m_MapSize-Offset;
+						ChunkSize = m_aMapInfos[m_aClients[ClientID].MapType()].m_MapSize - Offset;
 						m_aClients[ClientID].m_MapChunk = -1;
 					}
 					else
@@ -1793,22 +1795,25 @@ int CServer::LoadMap(const char *pMapName, int MapType)
 	char aBuf[IO_MAX_PATH_LENGTH];
 	str_format(aBuf, sizeof(aBuf), "%s/%s.map", GetMapTypeDir(MapType), pMapName);
 
-	// check for valid standard map (based map type)
-	if(MapType == MAPTYPE_SEVEN && !m_pMapChecker->ReadAndValidateMap(aBuf, IStorage::TYPE_ALL))
+	if(MapType == MAPTYPE_SEVEN)
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "mapchecker", "invalid standard map");
-		return 0;
-	}
+		// check for valid standard map (based map type)
+		if(!m_pMapChecker->ReadAndValidateMap(aBuf, IStorage::TYPE_ALL))
+		{
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "mapchecker", "invalid standard map");
+			return 0;
+		}
 
-	if(!m_pMap->Load(aBuf))
-		return 0;
-	
-	{
+		if(!m_pMap->Load(aBuf))
+			return 0;
+		
 		// get the sha256 and crc of the map
 		m_aMapInfos[MapType].m_MapSha256 = m_pMap->Sha256();
 		m_aMapInfos[MapType].m_MapCrc = m_pMap->Crc();
+		
 		char aSha256[SHA256_MAXSTRSIZE];
 		sha256_str(m_aMapInfos[MapType].m_MapSha256, aSha256, sizeof(aSha256));
+
 		char aBufMsg[256];
 		str_format(aBufMsg, sizeof(aBufMsg), "%s sha256 is %s", aBuf, aSha256);
 		Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "server", aBufMsg);
@@ -1817,17 +1822,34 @@ int CServer::LoadMap(const char *pMapName, int MapType)
 	}
 
 	// load complete map into memory for download
+	void *pData;
+	unsigned MapSize;
+	if(Storage()->ReadFile(aBuf, IStorage::TYPE_ALL, &pData, &MapSize))
 	{
-		IOHANDLE File = Storage()->OpenFile(aBuf, IOFLAG_READ, IStorage::TYPE_ALL);
-		m_aMapInfos[MapType].m_MapSize = (int)io_length(File);
+		m_aMapInfos[MapType].m_MapSize = (int) MapSize;
+
 		if(m_aMapInfos[MapType].m_pMapData && !m_aMapInfos[MapType].m_DefaultMap) // if it's not use the same data as 0.7, free it.
 			mem_free(m_aMapInfos[MapType].m_pMapData);
-		m_aMapInfos[MapType].m_pMapData = (unsigned char *)mem_alloc(m_aMapInfos[MapType].m_MapSize);
-		io_read(File, m_aMapInfos[MapType].m_pMapData, m_aMapInfos[MapType].m_MapSize);
-		io_close(File);
-	}
+		m_aMapInfos[MapType].m_pMapData = (unsigned char *) pData;
 
-	m_aMapInfos[MapType].m_DefaultMap = false;
+		if(MapType != NETPROTOCOL_SEVEN)
+		{
+			m_aMapInfos[MapType].m_MapSha256 = sha256(m_aMapInfos[MapType].m_pMapData, m_aMapInfos[MapType].m_MapSize);
+			m_aMapInfos[MapType].m_MapCrc = crc32(0, m_aMapInfos[MapType].m_pMapData, m_aMapInfos[MapType].m_MapSize);
+		
+			char aSha256[SHA256_MAXSTRSIZE];
+			sha256_str(m_aMapInfos[MapType].m_MapSha256, aSha256, sizeof(aSha256));
+
+			char aBufMsg[256];
+			str_format(aBufMsg, sizeof(aBufMsg), "%s sha256 is %s", aBuf, aSha256);
+			Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, GetMapTypeDir(MapType), aBufMsg);
+		}
+
+		m_aMapInfos[MapType].m_DefaultMap = false;
+	}else
+	{
+		return 0;
+	}
 
 	return 1;
 }
