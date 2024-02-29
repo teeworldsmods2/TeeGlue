@@ -2245,7 +2245,6 @@ foreach(target ${TARGETS_OWN})
   endif()
   if(DDNETMASTER)
     target_compile_definitions(${target} PRIVATE CONF_DDNETMASTER)
-    target_include_directories(${target} PRIVATE ${CURL_INCLUDE_DIRS})
   endif()
 endforeach()
 
