@@ -1694,7 +1694,8 @@ void CServer::PumpNetwork()
 			{
 				if(ResponseToken == NET_TOKEN_NONE && m_pRegisterDDNet->OnPacket(&Packet))
 					continue;
-			}else 
+			}
+			else 
 #endif
 			{
 				if(Packet.m_Flags&NETSENDFLAG_SIX)
@@ -1745,7 +1746,8 @@ void CServer::PumpNetwork()
 				Response.m_pData = Packer.Data();
 				Response.m_DataSize = Packer.Size();
 				m_NetServer.Send(&Response, ResponseToken);
-			}else if(Type != -1)
+			}
+			else if(Type != -1)
 			{
 				int Token = ((unsigned char *)Packet.m_pData)[sizeof(SERVERBROWSE_GETINFO)];
 				Token |= ExtraToken << 8;
@@ -1846,7 +1848,8 @@ int CServer::LoadMap(const char *pMapName, int MapType)
 		}
 
 		m_aMapInfos[MapType].m_DefaultMap = false;
-	}else
+	}
+	else
 	{
 		return 0;
 	}

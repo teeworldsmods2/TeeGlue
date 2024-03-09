@@ -697,6 +697,8 @@ void CGameContext::OnClientEnter(int ClientID)
 		NewClientInfoMsg.m_aSkinPartColors[p] = m_apPlayers[ClientID]->m_TeeInfos.m_aSkinPartColors[p];
 	}
 
+	SendChatLocalize(-1, CHAT_ALL, ClientID, "Hello %s, it's %d", Server()->ClientName(ClientID), time_get());
+
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
@@ -1895,6 +1897,87 @@ void CGameContext::UpdatePlayerSkin(int ClientID, CTeeInfo Skin)
 			continue;
 
 		SendSkinChange(ClientID, i);
+	}
+}
+
+template <class ...T>
+void CGameContext::SendChatLocalize(int ChatterClientID, int Mode, int To, const char *pFormat, T&&... Args)
+{
+	char aBuf[1024];
+
+	CNetMsg_Sv_Chat Msg;
+	Msg.m_Mode = Mode;
+	Msg.m_ClientID = ChatterClientID;
+	Msg.m_TargetID = -1;
+
+	if(To < 0)
+	{
+		// send for demo
+		{
+			str_format_nowarn(aBuf, sizeof(aBuf), pFormat, Args...);
+			
+			Msg.m_pMessage = aBuf;
+			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NOSEND, -1, false);
+		}
+
+		for(int i = 0; i < MAX_CLIENTS; i ++)
+		{
+			if(m_apPlayers[i])
+			{
+				str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(i), pFormat), Args...);
+				
+				Msg.m_pMessage = aBuf;
+				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
+			}
+		}
+	}
+	else
+	{
+		if(m_apPlayers[To])
+		{
+			str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(To), pFormat), Args...);
+				
+			Msg.m_pMessage = aBuf;
+			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, To);
+		}
+	}
+}
+
+template <class ...T>
+void CGameContext::SendBroadcastLocalize(const char *pFormat, int ClientID, T&&... Args)
+{
+	char aBuf[1024];
+	CNetMsg_Sv_Broadcast Msg;
+
+	if(ClientID < 0)
+	{
+		// send for demo
+		{
+			Msg.m_pMessage = aBuf;
+			str_format_nowarn(aBuf, sizeof(aBuf), pFormat, Args...);
+			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NOSEND, -1, false);
+		}
+
+		for(int i = 0; i < MAX_CLIENTS; i ++)
+		{
+			if(m_apPlayers[i])
+			{
+				str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(i), pFormat), Args...);
+
+				Msg.m_pMessage = aBuf;
+				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
+			}
+		}
+	}
+	else
+	{
+		if(m_apPlayers[ClientID])
+		{
+			str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(ClientID), pFormat), Args...);
+
+			Msg.m_pMessage = aBuf;
+			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, ClientID);
+		}
 	}
 }
 

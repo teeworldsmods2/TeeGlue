@@ -2147,6 +2147,24 @@ int str_length(const char *str)
 	return (int)strlen(str);
 }
 
+void str_format_nowarn(char *buffer, int buffer_size, const char *format, ...)
+{
+	va_list ap;
+	dbg_assert(buffer_size > 0, "buffer_size invalid");
+	va_start(ap, format);
+
+#if defined(CONF_FAMILY_WINDOWS) && !defined(__GNUC__)
+	_vsprintf_p(buffer, buffer_size, format, ap);
+#else
+	vsnprintf(buffer, buffer_size, format, ap);
+#endif
+
+	va_end(ap);
+
+	buffer[buffer_size-1] = 0; /* assure null termination */
+}
+
+
 void str_format(char *buffer, int buffer_size, const char *format, ...)
 {
 	va_list ap;

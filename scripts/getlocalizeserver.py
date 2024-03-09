@@ -12,6 +12,8 @@ def ReadFile(path):
         line = line.strip()
 
         string = re.findall("Localize\s*\(\s*\S*\s*,*\s*\"([^\"]+)*\"\s*\)", line)
+        string += re.findall("FormatLocalize\s*\(\s*\S*\s*,*\s*\"([^\"]+)*\"\s*\)", line)
+        string += re.findall("FormatLocalizeC\s*\(\s*\S*\s*,*\s*\"([^\"]+)*\"\s*\)", line)
         if len(string) > 0:
             for i in string:
                 TranslateString : str = i

@@ -239,7 +239,8 @@ void CNetBase::SendPacket(const NETADDR *pAddr, CNetPacketConstruct *pPacket, in
 			aBuffer[i++] = (pPacket->m_Token>>16)&0xff;
 			aBuffer[i++] = (pPacket->m_Token>>8)&0xff;
 			aBuffer[i++] = (pPacket->m_Token)&0xff;
-		}else
+		}
+		else
 		{
 			aBuffer[i++] = pPacket->m_NumChunks; // num chunks
 		}
@@ -331,7 +332,8 @@ int CNetBase::UnpackPacket(unsigned char *pBuffer, int Size, CNetPacketConstruct
 				// TTTTTTTT TTTTTTTT TTTTTTTT TTTTTTTT
 			pPacket->m_ResponseToken = (pBuffer[5]<<24) | (pBuffer[6]<<16) | (pBuffer[7]<<8) | pBuffer[8];
 				// RRRRRRRR RRRRRRRR RRRRRRRR RRRRRRRR
-		}else
+		}
+		else
 		{
 			pPacket->m_ResponseToken = NET_TOKEN_NONE;
 		}

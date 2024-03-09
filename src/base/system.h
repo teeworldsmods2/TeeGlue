@@ -15,6 +15,8 @@
 extern "C" {
 #endif
 
+#include <stdarg.h>
+
 #ifdef __GNUC__
 #define GNUC_ATTRIBUTE(x) __attribute__(x)
 #else
@@ -916,6 +918,22 @@ void str_truncate(char *dst, int dst_size, const char *src, int truncation_len);
 */
 int str_length(const char *str);
 
+/*
+	Function: str_format_nowarn
+		Performs printf formatting into a buffer.
+
+	Parameters:
+		buffer - Pointer to the buffer to receive the formatted string.
+		buffer_size - Size of the buffer.
+		format - printf formatting string.
+		... - Parameters for the formatting.
+
+	Remarks:
+		- See the C manual for syntax for the printf formatting string.
+		- The strings are treated as zero-termineted strings.
+		- Guarantees that dst string will contain zero-termination.
+*/
+void str_format_nowarn(char *buffer, int buffer_size, const char *format, ...);
 /*
 	Function: str_format
 		Performs printf formatting into a buffer.

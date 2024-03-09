@@ -9,6 +9,9 @@
 
 #include <map>
 
+#define FormatLocalize(TEXT) TEXT
+#define FormatLocalizeC(TEXT, CONTEXT) TEXT
+
 class CLocalizationServerDatabase
 {
 	class CString

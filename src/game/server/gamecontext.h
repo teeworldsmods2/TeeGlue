@@ -203,7 +203,16 @@ public:
 	virtual const char *NetVersionHashUsed() const;
 	virtual const char *NetVersionHashReal() const;
 
+	// TeeGlue
 	void UpdatePlayerSkin(int ClientID, class CTeeInfo Skin);
+
+	// please check format args yourself!!!!!!
+	template <class ...T>
+	void SendChatLocalize(int ChatterClientID, int Mode, int To, const char *pFormat, T&&... Args);
+
+	// please check format args yourself!!!!!!
+	template <class ...T>
+	void SendBroadcastLocalize(const char *pFormat, int ClientID, T&&... Args);
 
 #ifdef CONF_DDNETMASTER
 	void OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int ID) override;

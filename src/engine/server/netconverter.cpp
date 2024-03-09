@@ -200,7 +200,8 @@ bool CNetConverter::DeepConvertClientMsg6(CMsgUnpacker *pItem, int& Type, bool S
 
                 *pItem = CMsgUnpacker(Msg7.Data(), Msg7.Size());
                 Type = NETMSGTYPE_CL_COMMAND;
-            }else
+            }
+            else
             {
                 CMsgPacker Msg7(NETMSGTYPE_CL_SAY, false, false);
                 Msg7.AddInt(Team ? CHAT_TEAM : CHAT_ALL);
