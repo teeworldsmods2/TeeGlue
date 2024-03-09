@@ -697,9 +697,6 @@ void CGameContext::OnClientEnter(int ClientID)
 		NewClientInfoMsg.m_aSkinPartColors[p] = m_apPlayers[ClientID]->m_TeeInfos.m_aSkinPartColors[p];
 	}
 
-	SendChatLocalize(-1, CHAT_ALL, ClientID, "Hello %s, it's %d", Server()->ClientName(ClientID), time_get());
-
-
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
 		if(i == ClientID || !m_apPlayers[i] || (!Server()->ClientIngame(i) && !m_apPlayers[i]->IsDummy()))
