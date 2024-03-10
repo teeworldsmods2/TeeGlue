@@ -74,6 +74,7 @@ class CGameContext : public IGameServer
 
 	static void ComLanguage(IConsole::IResult *pResult, void *pContext);
 	static void ComWhisper(IConsole::IResult *pResult, void *pContext);
+	static void ComReady(IConsole::IResult *pResult, void *pContext);
 
 	CGameContext(int Resetting);
 	void Construct(int Resetting);

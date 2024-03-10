@@ -1715,6 +1715,19 @@ void CGameContext::ComWhisper(IConsole::IResult *pResult, void *pContext)
 	pSelf->SendChat(pComContext->m_ClientID, CHAT_WHISPER, Target, pResult->GetString(1));
 }
 
+void CGameContext::ComReady(IConsole::IResult *pResult, void *pContext)
+{
+	CCommandManager::SCommandContext *pComContext = (CCommandManager::SCommandContext *)pContext;
+	CGameContext *pSelf = (CGameContext *)pComContext->m_pContext;
+
+	CPlayer *pPlayer = pSelf->m_apPlayers[pComContext->m_ClientID];
+	if(pPlayer->m_LastReadyChangeTick && pPlayer->m_LastReadyChangeTick+pSelf->Server()->TickSpeed()*1 > pSelf->Server()->Tick())
+		return;
+
+	pPlayer->m_LastReadyChangeTick = pSelf->Server()->Tick();
+	pSelf->m_pController->OnPlayerReadyChange(pPlayer);
+}
+
 void CGameContext::OnInit()
 {
 	// init everything
@@ -1759,6 +1772,9 @@ void CGameContext::OnInit()
 
 	CommandManager()->AddCommand("lang", "Setting your language", "?s[text]", ComLanguage, this);
 	CommandManager()->AddCommand("language", "Setting your language", "?s[text]", ComLanguage, this);
+
+	CommandManager()->AddCommand("r", "Switch your ready state", "", ComReady, this);
+	CommandManager()->AddCommand("ready", "Switch your ready state", "", ComReady, this);
 
 	// create all entities from the game layer
 	CMapItemLayerTilemap *pTileMap = m_Layers.GameLayer();
