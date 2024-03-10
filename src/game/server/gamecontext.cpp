@@ -1897,8 +1897,7 @@ void CGameContext::UpdatePlayerSkin(int ClientID, CTeeInfo Skin)
 	}
 }
 
-template <class ...T>
-void CGameContext::SendChatLocalize(int ChatterClientID, int Mode, int To, const char *pFormat, T&&... Args)
+void CGameContext::SendChatLocalize(int ChatterClientID, int Mode, int To, const char *pFormat, ...)
 {
 	char aBuf[1024];
 
@@ -1907,11 +1906,15 @@ void CGameContext::SendChatLocalize(int ChatterClientID, int Mode, int To, const
 	Msg.m_ClientID = ChatterClientID;
 	Msg.m_TargetID = -1;
 
+	va_list Args;
+
 	if(To < 0)
 	{
 		// send for demo
 		{
-			str_format_nowarn(aBuf, sizeof(aBuf), pFormat, Args...);
+			va_start(Args, pFormat);
+			str_format_v(aBuf, sizeof(aBuf), pFormat, Args);
+			va_end(Args);
 			
 			Msg.m_pMessage = aBuf;
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NOSEND, -1, false);
@@ -1921,7 +1924,9 @@ void CGameContext::SendChatLocalize(int ChatterClientID, int Mode, int To, const
 		{
 			if(m_apPlayers[i])
 			{
-				str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(i), pFormat), Args...);
+				va_start(Args, pFormat);
+				str_format_v(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(i), pFormat), Args);
+				va_end(Args);
 				
 				Msg.m_pMessage = aBuf;
 				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
@@ -1932,7 +1937,9 @@ void CGameContext::SendChatLocalize(int ChatterClientID, int Mode, int To, const
 	{
 		if(m_apPlayers[To])
 		{
-			str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(To), pFormat), Args...);
+			va_start(Args, pFormat);
+			str_format_v(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(To), pFormat), Args);
+			va_end(Args);
 				
 			Msg.m_pMessage = aBuf;
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, To);
@@ -1940,18 +1947,22 @@ void CGameContext::SendChatLocalize(int ChatterClientID, int Mode, int To, const
 	}
 }
 
-template <class ...T>
-void CGameContext::SendBroadcastLocalize(const char *pFormat, int ClientID, T&&... Args)
+void CGameContext::SendBroadcastLocalize(const char *pFormat, int ClientID, ...)
 {
 	char aBuf[1024];
 	CNetMsg_Sv_Broadcast Msg;
+
+	va_list Args;
 
 	if(ClientID < 0)
 	{
 		// send for demo
 		{
+			va_start(Args, ClientID);
+			str_format_v(aBuf, sizeof(aBuf), pFormat, Args);
+			va_end(Args);
+
 			Msg.m_pMessage = aBuf;
-			str_format_nowarn(aBuf, sizeof(aBuf), pFormat, Args...);
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NOSEND, -1, false);
 		}
 
@@ -1959,7 +1970,9 @@ void CGameContext::SendBroadcastLocalize(const char *pFormat, int ClientID, T&&.
 		{
 			if(m_apPlayers[i])
 			{
-				str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(i), pFormat), Args...);
+				va_start(Args, ClientID);
+				str_format_v(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(i), pFormat), Args);
+				va_end(Args);
 
 				Msg.m_pMessage = aBuf;
 				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
@@ -1970,7 +1983,9 @@ void CGameContext::SendBroadcastLocalize(const char *pFormat, int ClientID, T&&.
 	{
 		if(m_apPlayers[ClientID])
 		{
-			str_format_nowarn(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(ClientID), pFormat), Args...);
+			va_start(Args, ClientID);
+			str_format_v(aBuf, sizeof(aBuf), Localize(Server()->GetClientLanguage(ClientID), pFormat), Args);
+			va_end(Args);
 
 			Msg.m_pMessage = aBuf;
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, ClientID);

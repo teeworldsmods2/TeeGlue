@@ -919,7 +919,7 @@ void str_truncate(char *dst, int dst_size, const char *src, int truncation_len);
 int str_length(const char *str);
 
 /*
-	Function: str_format_nowarn
+	Function: str_format_v
 		Performs printf formatting into a buffer.
 
 	Parameters:
@@ -933,7 +933,7 @@ int str_length(const char *str);
 		- The strings are treated as zero-termineted strings.
 		- Guarantees that dst string will contain zero-termination.
 */
-void str_format_nowarn(char *buffer, int buffer_size, const char *format, ...);
+void str_format_v(char *buffer, int buffer_size, const char *format, va_list args);
 /*
 	Function: str_format
 		Performs printf formatting into a buffer.

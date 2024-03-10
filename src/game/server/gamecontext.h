@@ -206,13 +206,11 @@ public:
 	// TeeGlue
 	void UpdatePlayerSkin(int ClientID, class CTeeInfo Skin);
 
-	// please check format args yourself!!!!!!
-	template <class ...T>
-	void SendChatLocalize(int ChatterClientID, int Mode, int To, const char *pFormat, T&&... Args);
+	void SendChatLocalize(int ChatterClientID, int Mode, int To, const char *pFormat, ...)
+	GNUC_ATTRIBUTE((format(printf, 5, 6)));
 
-	// please check format args yourself!!!!!!
-	template <class ...T>
-	void SendBroadcastLocalize(const char *pFormat, int ClientID, T&&... Args);
+	void SendBroadcastLocalize(const char *pFormat, int ClientID, ...)
+	GNUC_ATTRIBUTE((format(printf, 2, 4)));
 
 #ifdef CONF_DDNETMASTER
 	void OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int ID) override;
