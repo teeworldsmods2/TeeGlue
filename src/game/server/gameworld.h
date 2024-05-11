@@ -24,6 +24,7 @@ public:
 		ENTTYPE_CHARACTER,
 		ENTTYPE_FLAG,
 		ENTTYPE_AREA_FLAG,
+		ENTTYPE_VEHICLE,
 		NUM_ENTTYPES
 	};
 
@@ -84,7 +85,7 @@ public:
 		Returns:
 			Returns a pointer to the closest CEntity or NULL if no CEntity is close enough.
 	*/
-	CEntity *ClosestEntity(vec2 Pos, float Radius, int Type, CEntity *pNotThis);
+	CEntity *ClosestEntity(vec2 Pos, float Radius, int Type, CEntity *pNotThis, bool IgnoreDrivers = false);
 
 	/*
 		Function: interserct_CCharacter
